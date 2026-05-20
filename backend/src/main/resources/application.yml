@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: stock-backend
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/stock_db
+    username: stock
+    password: stock
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: execution-engine
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json:
+          trusted:
+            packages: com.bellwin.stock
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 8080
+
+stock:
+  rate-limit:
+    max-requests-per-second: 10
+    window-seconds: 1
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+logging:
+  level:
+    com.bellwin.stock: INFO
